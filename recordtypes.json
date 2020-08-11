@@ -1,0 +1,66 @@
+[
+  {
+    "description": "Map a name to an IP address",
+    "type": "A"
+  },
+  {
+    "description": "Map a name to an IPv6 address",
+    "type": "AAAA"
+  },
+  {
+    "description": "Map a name to another domain's IP addresses",
+    "type": "ALIAS"
+  },
+  {
+    "description": "Authorize Certificate Authorities to issue certificates for this domain",
+    "type": "CAA"
+  },
+  {
+    "description": "Map a name to another name",
+    "type": "CNAME"
+  },
+  {
+    "description": "Describe CPU and OS for a host",
+    "type": "HINFO"
+  },
+  {
+    "description": "Define a mail exchange that can deliver email for the domain",
+    "type": "MX"
+  },
+  {
+    "description": "Name authority pointer that maps URNs to domains",
+    "type": "NAPTR"
+  },
+  {
+    "description": "Delegate a subdomain to another name server",
+    "type": "NS"
+  },
+  {
+    "description": "Alias to a pool of host names",
+    "type": "POOL"
+  },
+  {
+    "description": "Reverse DNS record for mapping an address to a domain name",
+    "type": "PTR"
+  },
+  {
+    "description": "Sender Policy Framework record that defines who can send email from a domain",
+    "type": "SPF"
+  },
+  {
+    "description": "Define a service that is available for the domain",
+    "type": "SRV"
+  },
+  {
+    "description": "Provide an SSH finger print",
+    "type": "SSHFP"
+  },
+  {
+    "description": "Handle custom text records",
+    "type": "TXT"
+  },
+  {
+    "description": "Forward HTTP traffic from the domain to a URL",
+    "type": "URL"
+  }
+]
