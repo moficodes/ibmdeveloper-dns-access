@@ -1,47 +1,52 @@
-import React from 'react';
+import React from "react";
+import useSwr from "swr";
+import { makeStyles } from "@material-ui/core/styles";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import fetcher from "../api/fetcher";
 
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 650,
+    background: "#F2F2F2"
   },
-});
+  header: {
+    background: "#FAFAFA",
+  },
+  headerLabel: {
+    fontSize: theme.typography.pxToRem(16),
+    fontWeight: theme.typography.fontWeightBold,
+  }
+}));
 
-
-
-export default function ZoneTable({rows}) {
+export default function ZoneTable({ zone }) {
   const classes = useStyles();
-
+  const { loading, data, error } = useSwr(`/records/${zone}`,fetcher)
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-            <TableCell align="right">Protein&nbsp;(g)</TableCell>
+            <TableCell className={classes.headerLabel}>Type</TableCell>
+            <TableCell className={classes.headerLabel} align="left">Name</TableCell>
+            <TableCell className={classes.headerLabel}>Content</TableCell>
+            <TableCell className={classes.headerLabel} align="left">ttl</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.name}>
+          {data && data.map((row) => (
+            <TableRow key={row.id}>
               <TableCell component="th" scope="row">
-                {row.name}
+                {row.type}
               </TableCell>
-              <TableCell align="right">{row.calories}</TableCell>
-              <TableCell align="right">{row.fat}</TableCell>
-              <TableCell align="right">{row.carbs}</TableCell>
-              <TableCell align="right">{row.protein}</TableCell>
+              <TableCell align="left">{`${row.name}.${row.zone_id}`}</TableCell>
+              <TableCell>{row.content}</TableCell>
+              <TableCell align="left">{row.ttl}</TableCell>
             </TableRow>
           ))}
         </TableBody>

@@ -50,6 +50,16 @@ func ZoneRecordsHandler(c echo.Context) error {
 }
 
 func CreateNewRecord(c echo.Context) error {
+	session, err := getCloudSessions(c)
+	if err != nil {
+		return err
+	}
+
+	session, err = session.RenewSession()
+	if err != nil {
+		return err
+	}
+
 	client, err := dns.GetDNSimpleClient()
 	if err != nil {
 		return err
@@ -74,5 +84,5 @@ func CreateNewRecord(c echo.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, CreateResponse{Message: "success"})
+	return c.JSON(http.StatusOK, StatusOK{Message: "success"})
 }

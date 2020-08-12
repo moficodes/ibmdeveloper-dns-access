@@ -14,12 +14,23 @@ func main() {
 		return c.JSON(http.StatusOK, "{'meesage': 'success'}")
 	})
 
-	e.GET("/zones", handlers.ListZoneHandler)
-	e.GET("/records/:zone", handlers.ZoneRecordsHandler)
+	api := e.Group("/api")
 
-	e.POST("/records", handlers.CreateNewRecord)
+	api.GET("/zones", handlers.ListZoneHandler)
+	api.GET("/records/:zone", handlers.ZoneRecordsHandler)
+	api.POST("/records", handlers.CreateNewRecord)
+
+	api.GET("/user", handlers.UserInfoHandler)
+	api.GET("/auth/login", handlers.LoginHandler)
+	api.GET("/auth/authenticate", handlers.AuthenticationHandler)
+
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: "time=${time}, method=${method}, uri=${uri}, status=${status} latency=${latency_human}\n",
+	}))
+
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"http://localhost:3333"},
+		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 	}))
 	e.Logger.Fatal(e.Start(":7777"))
 }

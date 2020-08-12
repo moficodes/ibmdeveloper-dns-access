@@ -9,8 +9,13 @@ type CreateRecord struct {
 	TTL        int    `json:"ttl"`
 }
 
-type CreateResponse struct {
+type StatusOK struct {
 	Message string `json:"message"`
 }
 
-//zone, zoneID, recordType, recordZone, content string, ttl int
+//IBMCloud handler related types
+
+// AccountLogin ...
+type AccountLogin struct {
+	OTP string `json:"otp"`
+}
