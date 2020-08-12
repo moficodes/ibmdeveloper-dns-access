@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/moficodes/ibmdeveloper-domain/pkg/ibmcloud"
@@ -44,6 +45,19 @@ func LoginHandler(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, StatusOK{Message: "success"})
+}
+
+func LogoutHandler(c echo.Context) error {
+	accessTokenCookie := &http.Cookie{Name: accessTokenKey, Value: "", Path: cookiePath, Expires: time.Unix(0, 0)}
+	c.SetCookie(accessTokenCookie)
+
+	refreshTokenCookie := &http.Cookie{Name: refreshTokenKey, Value: "", Path: cookiePath, Expires: time.Unix(0, 0)}
+	c.SetCookie(refreshTokenCookie)
+
+	expirationCookie := &http.Cookie{Name: expiration, Value: "0", Path: cookiePath, Expires: time.Unix(0, 0)}
+	c.SetCookie(expirationCookie)
+
+	return c.JSON(http.StatusOK, StatusOK{Message: "cookie removed"})
 }
 
 func TokenEndpointHandler(c echo.Context) error {

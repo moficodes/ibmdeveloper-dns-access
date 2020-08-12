@@ -24,6 +24,7 @@ func main() {
 	api.GET("/user", handlers.UserInfoHandler)
 	api.GET("/user/:userID/preference", handlers.UserPreferenceHandler)
 	api.GET("/auth/login", handlers.LoginHandler)
+	api.POST("/auth/logout", handlers.LogoutHandler)
 	api.POST("/auth/authenticate", handlers.AuthenticationHandler)
 
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{

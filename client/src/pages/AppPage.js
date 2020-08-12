@@ -12,6 +12,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import RefreshIcon from "@material-ui/icons/Refresh";
 
 import Domains from "../components/Domains";
 import useSWR from "swr";
@@ -73,6 +74,15 @@ export default function AppPage() {
     setOpen(true);
   };
 
+  const handleLogout = React.useCallback(async () => {
+    const { status } = await fetch("/api/auth/logout", {
+      method: "POST",
+    });
+    if (status === 200) {
+      setLoggedIn(false);
+    }
+  }, []);
+
   const handleSubmitOTP = React.useCallback(async (otp) => {
     const { status } = await fetch("/api/auth/authenticate", {
       method: "POST",
@@ -100,9 +110,15 @@ export default function AppPage() {
           <Typography variant="h6" className={classes.title}>
             IBM Developer DNS
           </Typography>
+
+          <IconButton color="inherit">
+            <RefreshIcon />
+          </IconButton>
           {loggedIn ? (
             <>
-              <Button color="inherit" onClick={() => setLoggedIn(false)}>Logout</Button>
+              <Button color="inherit" onClick={handleLogout}>
+                Logout
+              </Button>
               <Avatar src={userPref && userPref.photo} />
             </>
           ) : (
@@ -130,6 +146,7 @@ export default function AppPage() {
         </Toolbar>
       </AppBar>
       <Dialog
+        maxWidth="md"
         open={open}
         onClose={() => handleSubmitOTP(otp)}
         aria-labelledby="form-dialog-title"
