@@ -5,6 +5,7 @@ package ibmcloud
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -17,6 +18,7 @@ const protocol = "https://"
 // subdomains
 const (
 	subdomainIAM                = "iam."
+	subdomainUserManagement     = "user-management."
 	subdomainAccounts           = "accounts."
 	subdomainResourceController = "resource-controller."
 	subdomainClusters           = "containers."
@@ -30,16 +32,16 @@ const api = "cloud.ibm.com"
 
 // endpoints
 const (
-	identityEndpoint = protocol + subdomainIAM + api + "/identity/.well-known/openid-configuration"
-
-	accountsEndpoint     = protocol + subdomainAccounts + api + "/coe/v2/accounts"
-	resourcesEndpoint    = protocol + subdomainResourceController + api + "/v2/resource_instances"
-	resourceKeysEndpoint = protocol + subdomainResourceController + api + "/v2/resource_keys"
-	containersEndpoint   = protocol + subdomainClusters + api + "/global/v1"
-	usersEndpoint        = protocol + subdomainUsers + api + "/v2"
-	tagEndpoint          = protocol + subdomainTags + api + "/v3/tags"
-	billingEndpoint      = protocol + subdomainBilling + api + "/v4/accounts"
-	resourceEndoint      = protocol + subdomainResourceController + api + "/v1/resource_groups"
+	identityEndpoint       = protocol + subdomainIAM + api + "/identity/.well-known/openid-configuration"
+	userPreferenceEndpoint = protocol + subdomainUserManagement + api + "/v2/accounts"
+	accountsEndpoint       = protocol + subdomainAccounts + api + "/coe/v2/accounts"
+	resourcesEndpoint      = protocol + subdomainResourceController + api + "/v2/resource_instances"
+	resourceKeysEndpoint   = protocol + subdomainResourceController + api + "/v2/resource_keys"
+	containersEndpoint     = protocol + subdomainClusters + api + "/global/v1"
+	usersEndpoint          = protocol + subdomainUsers + api + "/v2"
+	tagEndpoint            = protocol + subdomainTags + api + "/v3/tags"
+	billingEndpoint        = protocol + subdomainBilling + api + "/v4/accounts"
+	resourceEndoint        = protocol + subdomainResourceController + api + "/v1/resource_groups"
 )
 
 const (
@@ -168,6 +170,22 @@ func getUserInfo(endpoint string, token string) (*UserInfo, error) {
 	if err != nil {
 		return nil, err
 	}
+	return &result, nil
+}
+
+func getUserPreference(accountID, userID, token string) (*User, error) {
+	endpoint := fmt.Sprintf("%s/%s/users/%s", userPreferenceEndpoint, accountID, userID)
+
+	header := map[string]string{
+		"Authorization": "Bearer " + token,
+	}
+
+	var result User
+	err := fetch(endpoint, header, nil, &result)
+	if err != nil {
+		return nil, err
+	}
+
 	return &result, nil
 }
 

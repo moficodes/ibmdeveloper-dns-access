@@ -21,8 +21,9 @@ func main() {
 	api.POST("/records", handlers.CreateNewRecord)
 
 	api.GET("/user", handlers.UserInfoHandler)
+	api.GET("/user/:accountID/:userID/preference", handlers.UserPreferenceHandler)
 	api.GET("/auth/login", handlers.LoginHandler)
-	api.GET("/auth/authenticate", handlers.AuthenticationHandler)
+	api.POST("/auth/authenticate", handlers.AuthenticationHandler)
 
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: "time=${time}, method=${method}, uri=${uri}, status=${status} latency=${latency_human}\n",

@@ -49,24 +49,6 @@ func LoginHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, StatusOK{Message: "success"})
 }
 
-func UserInfoHandler(c echo.Context) error {
-	session, err := getCloudSessions(c)
-
-	if err != nil {
-		log.Println("getting session")
-		log.Println(err)
-		return err
-	}
-
-	userInfo, err := session.GetUserInfo()
-	if err != nil {
-		log.Println("getting info")
-		log.Println(err)
-		return err
-	}
-	return c.JSON(http.StatusOK, userInfo)
-}
-
 func TokenEndpointHandler(c echo.Context) error {
 	endpoints, err := ibmcloud.GetIdentityEndpoints()
 	if err != nil {

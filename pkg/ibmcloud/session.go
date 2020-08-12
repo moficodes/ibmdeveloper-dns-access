@@ -118,6 +118,18 @@ func (s *Session) GetUserInfo() (*UserInfo, error) {
 	return getUserInfo(endpoints.UserinfoEndpoint, s.Token.AccessToken)
 }
 
+func (s *Session) GetUserPreference(accountID, userID string) (*User, error) {
+	if !s.IsValid() {
+		token, err := upgradeToken(endpoints.TokenEndpoint, s.Token.RefreshToken, "")
+		if err != nil {
+			return nil, err
+		}
+		log.Println("Token Refreshed.")
+		s.Token = token
+	}
+	return getUserPreference(accountID, userID, s.Token.AccessToken)
+}
+
 func bindAccountToToken(refreshToken, accountID string) (*Session, error) {
 	err := cacheIdentityEndpoints()
 	if err != nil {
