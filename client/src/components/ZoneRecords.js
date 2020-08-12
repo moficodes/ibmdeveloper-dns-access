@@ -1,6 +1,7 @@
 import React from "react";
 import useSwr from "swr";
 import { makeStyles } from "@material-ui/core/styles";
+
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -16,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     background: "#F2F2F2"
   },
   header: {
-    background: "#FAFAFA",
+    background: "#FDFDFA",
   },
   headerLabel: {
     fontSize: theme.typography.pxToRem(16),
@@ -24,13 +25,13 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function ZoneTable({ zone }) {
+export default function ZoneRecords({ zone }) {
   const classes = useStyles();
-  const { loading, data, error } = useSwr(`/records/${zone}`,fetcher)
+  const { loading, data, error } = useSwr(`/api/records/${zone}`,fetcher)
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="simple table">
-        <TableHead>
+        <TableHead className={classes.header}>
           <TableRow>
             <TableCell className={classes.headerLabel}>Type</TableCell>
             <TableCell className={classes.headerLabel} align="left">Name</TableCell>
