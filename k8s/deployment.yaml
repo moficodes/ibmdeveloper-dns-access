@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: getdns
+  labels:
+    run: getdns
+    version: v1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      run: getdns
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        run: getdns
+    spec:
+      containers:
+      - image: 
+        imagePullPolicy: Always
+        name: getdns
+        env:
+          - name: DNSIMPLE_API_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: dnsimple-secret
+                key: apikey
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 200m
+            memory: 256Mi
+      restartPolicy: Always

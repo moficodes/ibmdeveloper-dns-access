@@ -111,9 +111,6 @@ export default function AppPage() {
             IBM Developer DNS
           </Typography>
 
-          <IconButton color="inherit">
-            <RefreshIcon />
-          </IconButton>
           {loggedIn ? (
             <>
               <Button color="inherit" onClick={handleLogout}>
