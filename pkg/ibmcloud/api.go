@@ -5,7 +5,6 @@ package ibmcloud
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -33,7 +32,7 @@ const api = "cloud.ibm.com"
 // endpoints
 const (
 	identityEndpoint       = protocol + subdomainIAM + api + "/identity/.well-known/openid-configuration"
-	userPreferenceEndpoint = protocol + subdomainUserManagement + api + "/v2/accounts"
+	userPreferenceEndpoint = protocol + "user-preferences.ng.bluemix.net/v1/users/"
 	accountsEndpoint       = protocol + subdomainAccounts + api + "/coe/v2/accounts"
 	resourcesEndpoint      = protocol + subdomainResourceController + api + "/v2/resource_instances"
 	resourceKeysEndpoint   = protocol + subdomainResourceController + api + "/v2/resource_keys"
@@ -119,24 +118,6 @@ func getToken(endpoint string, otp string) (*Token, error) {
 	return &result, nil
 }
 
-func getTokenFromIAM(endpoint string, apikey string) (*Token, error) {
-	header := map[string]string{
-		"Authorization": basicAuth,
-	}
-
-	form := url.Values{}
-	form.Add("grant_type", apikeyGrantType)
-	form.Add("apikey", apikey)
-
-	result := &Token{}
-	err := postForm(endpoint, header, nil, form, result)
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
-}
-
 func upgradeToken(endpoint string, refreshToken string, accountID string) (*Token, error) {
 	header := map[string]string{
 		"Authorization": basicAuth,
@@ -173,8 +154,8 @@ func getUserInfo(endpoint string, token string) (*UserInfo, error) {
 	return &result, nil
 }
 
-func getUserPreference(accountID, userID, token string) (*User, error) {
-	endpoint := fmt.Sprintf("%s/%s/users/%s", userPreferenceEndpoint, accountID, userID)
+func getUserPreference(userID, token string) (*User, error) {
+	endpoint := userPreferenceEndpoint + userID
 
 	header := map[string]string{
 		"Authorization": "Bearer " + token,

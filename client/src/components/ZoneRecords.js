@@ -1,5 +1,5 @@
 import React from "react";
-import useSwr from "swr";
+import useSWR from "swr";
 import { makeStyles } from "@material-ui/core/styles";
 
 import Table from "@material-ui/core/Table";
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ZoneRecords({ zone }) {
   const classes = useStyles();
-  const { loading, data, error } = useSwr(`/api/records/${zone}`,fetcher)
+  const { loading, data, error } = useSWR(`/api/records/${zone}`,fetcher)
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="simple table">

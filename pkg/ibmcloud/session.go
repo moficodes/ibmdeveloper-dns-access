@@ -27,35 +27,18 @@ func GetIdentityEndpoints() (*IdentityEndpoints, error) {
 	return endpoints, nil
 }
 
-// IAMAuthenticate uses the api key to authenticate and return a Session
-func IAMAuthenticate(apikey string) (*Session, error) {
-	err := cacheIdentityEndpoints()
-	if err != nil {
-		log.Println("error with cached data")
-		return nil, err
-	}
-	token, err := getTokenFromIAM(endpoints.TokenEndpoint, apikey)
-
-	if err != nil {
-		log.Println("error with token data")
-		return nil, err
-	}
-	return &Session{Token: token}, nil
-}
-
 // Authenticate uses the one time passcode to authenticate and return a Session
 func Authenticate(otp string) (*Session, error) {
 	err := cacheIdentityEndpoints()
 	if err != nil {
-		log.Println("error with cached data")
 		return nil, err
 	}
 	token, err := getToken(endpoints.TokenEndpoint, otp)
 
 	if err != nil {
-		log.Println("error with token data")
 		return nil, err
 	}
+
 	return &Session{Token: token}, nil
 }
 
@@ -118,7 +101,7 @@ func (s *Session) GetUserInfo() (*UserInfo, error) {
 	return getUserInfo(endpoints.UserinfoEndpoint, s.Token.AccessToken)
 }
 
-func (s *Session) GetUserPreference(accountID, userID string) (*User, error) {
+func (s *Session) GetUserPreference(userID string) (*User, error) {
 	if !s.IsValid() {
 		token, err := upgradeToken(endpoints.TokenEndpoint, s.Token.RefreshToken, "")
 		if err != nil {
@@ -127,28 +110,7 @@ func (s *Session) GetUserPreference(accountID, userID string) (*User, error) {
 		log.Println("Token Refreshed.")
 		s.Token = token
 	}
-	return getUserPreference(accountID, userID, s.Token.AccessToken)
-}
-
-func bindAccountToToken(refreshToken, accountID string) (*Session, error) {
-	err := cacheIdentityEndpoints()
-	if err != nil {
-		return nil, err
-	}
-	token, err := upgradeToken(endpoints.TokenEndpoint, refreshToken, accountID)
-	if err != nil {
-		return nil, err
-	}
-	return &Session{Token: token}, nil
-}
-
-// BindAccountToToken upgrades session with account
-func (s *Session) BindAccountToToken(accountID string) (*Session, error) {
-	session, err := bindAccountToToken(s.Token.RefreshToken, accountID)
-	if err != nil {
-		return nil, err
-	}
-	return session, err
+	return getUserPreference(userID, s.Token.AccessToken)
 }
 
 // RenewSession renews session with refresh token
@@ -159,6 +121,7 @@ func (s *Session) RenewSession() (*Session, error) {
 	}
 	token, err := upgradeToken(endpoints.TokenEndpoint, s.Token.RefreshToken, "")
 	if err != nil {
+		log.Println(err)
 		return nil, err
 	}
 	return &Session{Token: token}, nil

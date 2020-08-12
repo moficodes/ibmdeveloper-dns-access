@@ -26,7 +26,6 @@ func UserInfoHandler(c echo.Context) error {
 func UserPreferenceHandler(c echo.Context) error {
 	session, err := getCloudSessions(c)
 
-	accountID := c.Param("accountID")
 	userID := c.Param("userID")
 
 	if err != nil {
@@ -34,7 +33,7 @@ func UserPreferenceHandler(c echo.Context) error {
 		return err
 	}
 
-	userPreference, err := session.GetUserPreference(accountID, userID)
+	userPreference, err := session.GetUserPreference(userID)
 	if err != nil {
 		log.Println(err)
 		return err

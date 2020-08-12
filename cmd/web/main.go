@@ -19,14 +19,15 @@ func main() {
 	api.GET("/zones", handlers.ListZoneHandler)
 	api.GET("/records/:zone", handlers.ZoneRecordsHandler)
 	api.POST("/records", handlers.CreateNewRecord)
+	api.GET("/token", handlers.TokenEndpointHandler)
 
 	api.GET("/user", handlers.UserInfoHandler)
-	api.GET("/user/:accountID/:userID/preference", handlers.UserPreferenceHandler)
+	api.GET("/user/:userID/preference", handlers.UserPreferenceHandler)
 	api.GET("/auth/login", handlers.LoginHandler)
 	api.POST("/auth/authenticate", handlers.AuthenticationHandler)
 
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-		Format: "time=${time}, method=${method}, uri=${uri}, status=${status} latency=${latency_human}\n",
+		Format: "${method} [${status}] ${latency_human}\t${uri}\n",
 	}))
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{

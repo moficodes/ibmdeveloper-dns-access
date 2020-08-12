@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -11,11 +10,11 @@ import (
 )
 
 const (
-	sessionName  = "cloud_session"
-	accessToken  = "access_token"
-	refreshToken = "refresh_token"
-	expiration   = "expiration"
-	cookiePath   = "/api"
+	sessionName     = "cloud_session"
+	accessTokenKey  = "access_token"
+	refreshTokenKey = "refresh_token"
+	expiration      = "expiration"
+	cookiePath      = "/api"
 )
 
 func AuthenticationHandler(c echo.Context) error {
@@ -26,8 +25,6 @@ func AuthenticationHandler(c echo.Context) error {
 
 	session, err := ibmcloud.Authenticate(accountLogin.OTP)
 	if err != nil {
-		log.Println("could not authenticate with the otp provided")
-		log.Println(err.Error())
 		return err
 	}
 
@@ -59,10 +56,10 @@ func TokenEndpointHandler(c echo.Context) error {
 }
 
 func setCookie(c echo.Context, session *ibmcloud.Session) {
-	accessTokenCookie := &http.Cookie{Name: accessToken, Value: session.Token.AccessToken, Path: cookiePath}
+	accessTokenCookie := &http.Cookie{Name: accessTokenKey, Value: session.Token.AccessToken, Path: cookiePath}
 	c.SetCookie(accessTokenCookie)
 
-	refreshTokenCookie := &http.Cookie{Name: refreshToken, Value: session.Token.RefreshToken, Path: cookiePath}
+	refreshTokenCookie := &http.Cookie{Name: refreshTokenKey, Value: session.Token.RefreshToken, Path: cookiePath}
 	c.SetCookie(refreshTokenCookie)
 
 	expirationStr := strconv.Itoa(session.Token.Expiration)
@@ -75,7 +72,7 @@ func getCloudSessions(c echo.Context) (*ibmcloud.Session, error) {
 	var accessToken string
 	var refreshToken string
 	var expirationTime int
-	accessTokenVal, err := c.Cookie(accessToken)
+	accessTokenVal, err := c.Cookie(accessTokenKey)
 	if err != nil {
 		bearerToken := c.Request().Header.Get("Authorization")
 		if bearerToken == "" {
@@ -90,7 +87,7 @@ func getCloudSessions(c echo.Context) (*ibmcloud.Session, error) {
 		accessToken = accessTokenVal.Value
 	}
 
-	refreshTokenVal, err := c.Cookie(refreshToken)
+	refreshTokenVal, err := c.Cookie(refreshTokenKey)
 	if err != nil {
 		refreshToken = c.Request().Header.Get("X-Auth-Refresh-Token")
 		if refreshToken == "" {

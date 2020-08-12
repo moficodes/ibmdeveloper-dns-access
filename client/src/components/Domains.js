@@ -5,7 +5,7 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Typography from "@material-ui/core/Typography";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
-import useSwr from "swr";
+import useSWR from "swr";
 import fetcher from "../api/fetcher";
 import ZoneRecord from "./ZoneRecords";
 
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 export default function Domains() {
-  const { loading, data, error } = useSwr("/api/zones", fetcher);
+  const { loading, data, error } = useSWR("/api/zones", fetcher);
   const classes = useStyles();
 
   if (!data) {
